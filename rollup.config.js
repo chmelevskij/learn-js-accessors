@@ -5,6 +5,8 @@ import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
+import builtins from 'rollup-plugin-node-builtins';
+import globals from 'rollup-plugin-node-globals';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -38,6 +40,8 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
+		builtins(),
+		globals(),
 		svelte({
 			// enable run-time checks when not in production
 			dev: !production,
@@ -58,7 +62,9 @@ export default {
 			browser: true,
 			dedupe: ['svelte']
 		}),
-		commonjs(),
+		commonjs({
+			include: ['recast'],
+		}),
 		typescript({
 			sourceMap: !production,
 			inlineSources: !production
