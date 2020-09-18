@@ -40,8 +40,6 @@ export default {
 		file: 'public/build/bundle.js'
 	},
 	plugins: [
-		builtins(),
-		globals(),
 		svelte({
 			// enable run-time checks when not in production
 			dev: !production,
@@ -62,13 +60,14 @@ export default {
 			browser: true,
 			dedupe: ['svelte']
 		}),
-		commonjs({
-			include: ['recast'],
-		}),
+		commonjs(),
 		typescript({
 			sourceMap: !production,
 			inlineSources: !production
 		}),
+
+		builtins(),
+		globals(),
 
 		// In dev mode, call `npm run start` once
 		// the bundle has been generated
