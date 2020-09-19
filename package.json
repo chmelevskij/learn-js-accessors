@@ -23,6 +23,11 @@
     "typescript": "^3.9.3"
   },
   "dependencies": {
+    "@rollup/plugin-json": "4.1.0",
+    "ajv": "6.12.5",
+    "ast-types": "0.14.2",
+    "esprima": "4.0.1",
+    "fluent-schema": "1.0.4",
     "recast": "0.20.3",
     "rollup-plugin-node-builtins": "2.1.2",
     "rollup-plugin-node-globals": "1.4.0",

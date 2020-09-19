@@ -1,30 +1,65 @@
 <script lang="ts">
-	export let name: string;
+  import { eachField, namedTypes, visit } from "ast-types";
+  import { parse } from "recast";
+  import Ajv from "ajv";
+  import exercises from "./exercises";
+
+  let exercise = exercises[0];
+  let content = "";
+  let errorMessage = "";
+  let currentQuestion = 0;
+  let done = false;
+
+  function handleSubmit() {
+    if (!content) {
+      errorMessage = "please provide some code";
+      return;
+    }
+    try {
+      errorMessage = "";
+      let ast = parse(content);
+
+      const validate = Ajv().compile(exercise.answerSchema.valueOf());
+      if (validate(ast)) {
+        currentQuestion += 1;
+        console.log(currentQuestion);
+        if (currentQuestion === exercises.length) {
+          done = true;
+          return;
+        }
+        exercise = exercises[currentQuestion];
+        errorMessage = "";
+      } else {
+        errorMessage = "Check your answer";
+        console.log(validate.errors);
+      }
+    } catch (error) {
+      errorMessage = error.description;
+    }
+  }
 </script>
 
-<main>
-	<h1>Hello {name}!</h1>
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
-</main>
-
 <style>
-	main {
-		text-align: center;
-		padding: 1em;
-		max-width: 240px;
-		margin: 0 auto;
-	}
-
-	h1 {
-		color: #ff3e00;
-		text-transform: uppercase;
-		font-size: 4em;
-		font-weight: 100;
-	}
-
-	@media (min-width: 640px) {
-		main {
-			max-width: none;
-		}
-	}
+  main {
+    display: grid;
+  }
+  form {
+    display: grid;
+  }
+  .error {
+    color: hsl(340deg 82% 52%);
+  }
 </style>
+
+<main>
+  {#if done}
+    <h2>done</h2>
+  {:else}
+    <div>{exercise?.description}</div>
+    <div class="error">{errorMessage}</div>
+  {/if}
+  <form on:submit|preventDefault={handleSubmit}>
+    <textarea rows="10" bind:value={content} />
+    <input disabled={done} type="submit" />
+  </form>
+</main>

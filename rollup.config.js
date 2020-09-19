@@ -7,6 +7,7 @@ import sveltePreprocess from 'svelte-preprocess';
 import typescript from '@rollup/plugin-typescript';
 import builtins from 'rollup-plugin-node-builtins';
 import globals from 'rollup-plugin-node-globals';
+import json from '@rollup/plugin-json';
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -50,6 +51,7 @@ export default {
 			},
 			preprocess: sveltePreprocess(),
 		}),
+		json(),
 
 		// If you have external dependencies installed from
 		// npm, you'll most likely need these plugins. In
