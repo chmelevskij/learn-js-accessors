@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { eachField, namedTypes, visit } from "ast-types";
   import { parse } from "recast";
   import Ajv from "ajv";
   import exercises from "./exercises";
