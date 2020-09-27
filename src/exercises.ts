@@ -386,11 +386,87 @@ let exercises: Question[] = [
   },
   {
     description: "get owners postcode with square bracket notation",
-    answerSchema: S.object(),
+    answerSchema: programBody(
+      expressionStatement(
+        S.object()
+          .prop("type", S.const("MemberExpression"))
+          .prop("computed", S.const(true))
+          .required()
+          .prop(
+            "object",
+            S.object()
+              .prop("type", S.const("MemberExpression"))
+              .prop("computed", S.const(true))
+              .required()
+              .prop(
+                "object",
+                S.object()
+                  .prop("type", S.const("MemberExpression"))
+                  .prop("computed", S.const(true))
+                  .prop(
+                    "object",
+                    S.object()
+                      .prop("type", S.const("MemberExpression"))
+                      .prop("computed", S.const(true))
+                      .prop("object", identifier("animal"))
+                      .required()
+                      .prop("property", literal("owners"))
+                      .required()
+                  )
+                  .required()
+                  .prop("property", literal(0))
+              )
+              .required()
+              .prop("property", literal("address"))
+              .required()
+          )
+          .required()
+          .prop("property", literal("postalCode"))
+          .required()
+      )
+    ),
   },
   {
     description: "get owners postcode with dot notation",
-    answerSchema: S.object(),
+    answerSchema: programBody(
+      expressionStatement(
+        S.object()
+          .prop("type", S.const("MemberExpression"))
+          .prop("computed", S.const(false))
+          .required()
+          .prop(
+            "object",
+            S.object()
+              .prop("type", S.const("MemberExpression"))
+              .prop("computed", S.const(false))
+              .required()
+              .prop(
+                "object",
+                S.object()
+                  .prop("type", S.const("MemberExpression"))
+                  .prop("computed", S.const(true))
+                  .prop(
+                    "object",
+                    S.object()
+                      .prop("type", S.const("MemberExpression"))
+                      .prop("computed", S.const(false))
+                      .prop("object", identifier("animal"))
+                      .required()
+                      .prop("property", identifier("owners"))
+                      .required()
+                  )
+                  .required()
+                  .prop("property", literal(0))
+              )
+              .required()
+              .prop("property", identifier("address"))
+              .required()
+          )
+          .required()
+          .prop("property", identifier("postalCode"))
+          .required()
+      )
+    ),
   },
 ];
 
