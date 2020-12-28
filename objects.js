@@ -24,10 +24,10 @@ log(22, animal['owners'][0]['name'])
 
 log(24, animal.owners[0].name)
 
-animal.owners[0].adress = {postalCode: "LT04337"}
+animal.owners[0].address = {postcode: "LT04337"}
 
 log(28, animal)
 
-log(30, animal['owners'][0]['adress']['postalCode'])
+log(30, animal['owners'][0]['address']['postcode'])
 
-log(32, animal.owners[0].adress.postalCode) 
+log(32, animal.owners[0].adress.postcode) 

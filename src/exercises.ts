@@ -42,6 +42,20 @@ function expressionStatement(expression) {
     .required();
 }
 
+function object({
+  computed = false, // computed square brackets
+  object,
+  property,
+}) {
+  return S.object()
+    .prop("type", S.const("MemberExpression"))
+    .prop("computed", S.const(computed))
+    .prop("object", object)
+    .required()
+    .prop("property", property)
+    .required();
+}
+
 const animalAnswerSchema = programBody(
   S.object()
     .prop("type", S.const("VariableDeclaration"))
@@ -141,7 +155,7 @@ let exercises: Question[] = [
   },
   {
     description:
-      "Add new owner using dot notation, and set it's name to anything you want",
+      "Add new owner to array using dot notation, and set it's name to anything you want",
     answerSchema: programBody(
       expressionStatement(
         S.object()
@@ -361,7 +375,7 @@ let exercises: Question[] = [
                   .items(
                     S.object()
                       .prop("type", S.const("Property"))
-                      .prop("key", identifier("postalCode"))
+                      .prop("key", identifier("postcode"))
                       .prop("computed", S.const(false))
                       .prop(
                         "value",
@@ -394,34 +408,22 @@ let exercises: Question[] = [
           .required()
           .prop(
             "object",
-            S.object()
-              .prop("type", S.const("MemberExpression"))
-              .prop("computed", S.const(true))
-              .required()
-              .prop(
-                "object",
-                S.object()
-                  .prop("type", S.const("MemberExpression"))
-                  .prop("computed", S.const(true))
-                  .prop(
-                    "object",
-                    S.object()
-                      .prop("type", S.const("MemberExpression"))
-                      .prop("computed", S.const(true))
-                      .prop("object", identifier("animal"))
-                      .required()
-                      .prop("property", literal("owners"))
-                      .required()
-                  )
-                  .required()
-                  .prop("property", literal(0))
-              )
-              .required()
-              .prop("property", literal("address"))
-              .required()
+            object({
+              computed: true,
+              object: object({
+                computed: true,
+                object: object({
+                  computed: true,
+                  object: identifier("animal"),
+                  property: literal("owners"),
+                }),
+                property: literal(0),
+              }),
+              property: literal("address"),
+            })
           )
           .required()
-          .prop("property", literal("postalCode"))
+          .prop("property", literal("postcode"))
           .required()
       )
     ),
@@ -430,41 +432,20 @@ let exercises: Question[] = [
     description: "get owners postcode with dot notation",
     answerSchema: programBody(
       expressionStatement(
-        S.object()
-          .prop("type", S.const("MemberExpression"))
-          .prop("computed", S.const(false))
-          .required()
-          .prop(
-            "object",
-            S.object()
-              .prop("type", S.const("MemberExpression"))
-              .prop("computed", S.const(false))
-              .required()
-              .prop(
-                "object",
-                S.object()
-                  .prop("type", S.const("MemberExpression"))
-                  .prop("computed", S.const(true))
-                  .prop(
-                    "object",
-                    S.object()
-                      .prop("type", S.const("MemberExpression"))
-                      .prop("computed", S.const(false))
-                      .prop("object", identifier("animal"))
-                      .required()
-                      .prop("property", identifier("owners"))
-                      .required()
-                  )
-                  .required()
-                  .prop("property", literal(0))
-              )
-              .required()
-              .prop("property", identifier("address"))
-              .required()
-          )
-          .required()
-          .prop("property", identifier("postalCode"))
-          .required()
+        object({
+          object: object({
+            object: object({
+              computed: true,
+              object: object({
+                object: identifier("animal"),
+                property: identifier("owners"),
+              }),
+              property: literal(0),
+            }),
+            property: identifier("address"),
+          }),
+          property: identifier("postcode"),
+        })
       )
     ),
   },
