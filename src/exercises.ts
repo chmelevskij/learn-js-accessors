@@ -103,12 +103,10 @@ let exercises: Question[] = [
     description: "Get the name of the animal species with dot notation",
     answerSchema: programBody(
       expressionStatement(
-        S.object()
-          .prop("type", S.const("MemberExpression"))
-          .required()
-          .prop("computed", S.const(false))
-          .prop("object", identifier("animal"))
-          .prop("property", identifier("species"))
+        object({
+          object: identifier('animal'),
+          property: identifier('species')
+        })
       )
     ),
   },
@@ -127,7 +125,7 @@ let exercises: Question[] = [
   },
   {
     description:
-      "Add new property to animal called owners, with an empty array as its value",
+      "Using dot notation, add new property to animal called owners, with an empty array as its value",
     answerSchema: programBody(
       expressionStatement(
         S.object()

@@ -8,6 +8,7 @@
   let errorMessage = "";
   let currentQuestion = 0;
   let done = false;
+  let answers = [];
 
   function handleSubmit() {
     if (!content) {
@@ -22,6 +23,7 @@
       if (validate(ast)) {
         currentQuestion += 1;
         console.log(currentQuestion);
+        answers = [...answers, content]
         if (currentQuestion === exercises.length) {
           done = true;
           return;
@@ -57,6 +59,11 @@
     <div>{exercise?.description}</div>
     <div class="error">{errorMessage}</div>
   {/if}
+  <ul>
+    {#each answers as answer}
+      <li>{answer}</li>
+    {/each}
+  </ul>
   <form on:submit|preventDefault={handleSubmit}>
     <textarea rows="10" bind:value={content} />
     <input disabled={done} type="submit" />
