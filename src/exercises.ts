@@ -42,7 +42,7 @@ function expressionStatement(expression) {
     .required();
 }
 
-function object({
+function objectMemberExpression({
   computed = false, // computed square brackets
   object,
   property,
@@ -56,56 +56,54 @@ function object({
     .required();
 }
 
-const animalAnswerSchema = programBody(
-  S.object()
-    .prop("type", S.const("VariableDeclaration"))
-    .required()
-    .prop("kind", S.oneOf([S.const("const"), S.const("let")]))
-    .required()
-    .prop(
-      "declarations",
-      S.array().items(
-        S.object()
-          .prop("type", S.const("VariableDeclarator"))
-          .prop("id", identifier("animal"))
-          .prop(
-            "init",
-            S.object()
-              .prop("type", S.const("ObjectExpression"))
-              .prop(
-                "properties",
-                S.array()
-                  .items([
-                    S.object()
-                      .prop("type", S.const("Property"))
-                      .prop("key", identifier("species"))
-                      .prop("value", literal("dog")),
-                    S.object()
-                      .prop("type", S.const("Property"))
-                      .prop("key", identifier("gender"))
-                      .prop("value", literal("male")),
-                  ])
-                  .minItems(2)
-                  .maxItems(2)
-              )
-          )
-      )
-    )
-);
-
 let exercises: Question[] = [
   {
     description:
       "Create an object called `animal` with properties `species` set to `dog` and `gender` set to `male`",
-    answerSchema: animalAnswerSchema,
+    answerSchema: programBody(
+      S.object()
+        .prop("type", S.const("VariableDeclaration"))
+        .required()
+        .prop("kind", S.oneOf([S.const("const"), S.const("let")]))
+        .required()
+        .prop(
+          "declarations",
+          S.array().items(
+            S.object()
+              .prop("type", S.const("VariableDeclarator"))
+              .prop("id", identifier("animal"))
+              .prop(
+                "init",
+                S.object()
+                  .prop("type", S.const("ObjectExpression"))
+                  .prop(
+                    "properties",
+                    S.array()
+                      .items([
+                        S.object()
+                          .prop("type", S.const("Property"))
+                          .prop("key", identifier("species"))
+                          .prop("value", literal("dog")),
+                        S.object()
+                          .prop("type", S.const("Property"))
+                          .prop("key", identifier("gender"))
+                          .prop("value", literal("male")),
+                      ])
+                      .minItems(2)
+                      .maxItems(2)
+                  )
+              )
+          )
+        )
+    ),
   },
   {
     description: "Get the name of the animal species with dot notation",
     answerSchema: programBody(
       expressionStatement(
-        object({
-          object: identifier('animal'),
-          property: identifier('species')
+        objectMemberExpression({
+          object: identifier("animal"),
+          property: identifier("species"),
         })
       )
     ),
@@ -114,12 +112,11 @@ let exercises: Question[] = [
     description: "Get the gender of the animal using square bracket notation",
     answerSchema: programBody(
       expressionStatement(
-        S.object()
-          .prop("type", S.const("MemberExpression"))
-          .required()
-          .prop("computed", S.const(true))
-          .prop("object", identifier("animal"))
-          .prop("property", literal("gender"))
+        objectMemberExpression({
+          computed: true,
+          object: identifier("animal"),
+          property: literal("gender"),
+        })
       )
     ),
   },
@@ -163,24 +160,14 @@ let exercises: Question[] = [
           .required()
           .prop(
             "left",
-            S.object()
-              .prop("type", S.const("MemberExpression"))
-              .required()
-              .prop("computed", S.const(true))
-              .prop(
-                "object",
-                S.object()
-                  .prop("type", S.const("MemberExpression"))
-                  .required()
-                  .prop("computed", S.const(false))
-                  .prop("object", identifier("animal"))
-                  .required()
-                  .prop("property", identifier("owners"))
-                  .required()
-              )
-              .required()
-              .prop("property", literal(0))
-              .required()
+            objectMemberExpression({
+              computed: true,
+              object: objectMemberExpression({
+                object: identifier("animal"),
+                property: identifier("owners"),
+              }),
+              property: literal(0),
+            })
           )
           .required()
           .prop(
@@ -221,14 +208,11 @@ let exercises: Question[] = [
     description: "Get all owners with square brackets notation",
     answerSchema: programBody(
       expressionStatement(
-        S.object()
-          .prop("type", S.const("MemberExpression"))
-          .prop("computed", S.const(true))
-          .required()
-          .prop("object", identifier("animal"))
-          .required()
-          .prop("property", literal("owners"))
-          .required()
+        objectMemberExpression({
+          computed: true,
+          object: identifier("animal"),
+          property: literal("owners"),
+        })
       )
     ),
   },
@@ -236,22 +220,15 @@ let exercises: Question[] = [
     description: "get just a first owner using square brackets notation",
     answerSchema: programBody(
       expressionStatement(
-        S.object()
-          .prop("type", S.const("MemberExpression"))
-          .prop("computed", S.const(true))
-          .required()
-          .prop(
-            "object",
-            S.object()
-              .prop("type", S.const("MemberExpression"))
-              .prop("computed", S.const(true))
-              .prop("object", identifier("animal"))
-              .required()
-              .prop("property", literal("owners"))
-          )
-          .required()
-          .prop("property", literal(0))
-          .required()
+        objectMemberExpression({
+          computed: true,
+          object: objectMemberExpression({
+            computed: true,
+            object: identifier("animal"),
+            property: literal("owners"),
+          }),
+          property: literal(0),
+        })
       )
     ),
   },
@@ -259,31 +236,19 @@ let exercises: Question[] = [
     description: "get the name of the first owner using square brackets",
     answerSchema: programBody(
       expressionStatement(
-        S.object()
-          .prop("type", S.const("MemberExpression"))
-          .prop("computed", S.const(true))
-          .required()
-          .prop(
-            "object",
-            S.object()
-              .prop("type", S.const("MemberExpression"))
-              .prop("computed", S.const(true))
-              .prop(
-                "object",
-                S.object()
-                  .prop("type", S.const("MemberExpression"))
-                  .prop("computed", S.const(true))
-                  .prop("object", identifier("animal"))
-                  .required()
-                  .prop("property", literal("owners"))
-                  .required()
-              )
-              .required()
-              .prop("property", literal(0))
-          )
-          .required()
-          .prop("property", literal("name"))
-          .required()
+        objectMemberExpression({
+          computed: true,
+          object: objectMemberExpression({
+            computed: true,
+            object: objectMemberExpression({
+              computed: true,
+              object: identifier("animal"),
+              property: literal("owners"),
+            }),
+            property: literal(0),
+          }),
+          property: literal("name"),
+        })
       )
     ),
   },
@@ -291,37 +256,23 @@ let exercises: Question[] = [
     description: "get the name of the first owner using dot notation",
     answerSchema: programBody(
       expressionStatement(
-        S.object()
-          .prop("type", S.const("MemberExpression"))
-          .prop("computed", S.const(false))
-          .required()
-          .prop(
-            "object",
-            S.object()
-              .prop("type", S.const("MemberExpression"))
-              .prop("computed", S.const(true))
-              .prop(
-                "object",
-                S.object()
-                  .prop("type", S.const("MemberExpression"))
-                  .prop("computed", S.const(false))
-                  .prop("object", identifier("animal"))
-                  .required()
-                  .prop("property", identifier("owners"))
-                  .required()
-              )
-              .required()
-              .prop("property", literal(0))
-          )
-          .required()
-          .prop("property", identifier("name"))
-          .required()
+        objectMemberExpression({
+          object: objectMemberExpression({
+            computed: true,
+            object: objectMemberExpression({
+              object: identifier("animal"),
+              property: identifier("owners"),
+            }),
+            property: literal(0),
+          }),
+          property: identifier("name"),
+        })
       )
     ),
   },
   {
     description:
-      "add a new property address to the owner with object with single property `postcode`",
+      "add a new property address to the owner with object with single property `postcode` using dot notation",
     answerSchema: programBody(
       expressionStatement(
         S.object()
@@ -331,35 +282,17 @@ let exercises: Question[] = [
           .required()
           .prop(
             "left",
-
-            S.object()
-              .prop("type", S.const("MemberExpression"))
-              .required()
-              .prop("computed", S.const(false))
-              .prop(
-                "object",
-                S.object()
-                  .prop("type", S.const("MemberExpression"))
-                  .required()
-                  .prop("computed", S.const(true))
-                  .prop(
-                    "object",
-                    S.object()
-                      .prop("type", S.const("MemberExpression"))
-                      .required()
-                      .prop("computed", S.const(false))
-                      .prop("object", identifier("animal"))
-                      .required()
-                      .prop("property", identifier("owners"))
-                      .required()
-                  )
-                  .required()
-                  .prop("property", literal(0))
-                  .required()
-              )
-              .required()
-              .prop("property", identifier("address"))
-              .required()
+            objectMemberExpression({
+              object: objectMemberExpression({
+                computed: true,
+                object: objectMemberExpression({
+                  object: identifier("animal"),
+                  property: identifier("owners"),
+                }),
+                property: literal(0),
+              }),
+              property: identifier("address"),
+            })
           )
           .required()
           .prop(
@@ -400,29 +333,23 @@ let exercises: Question[] = [
     description: "get owners postcode with square bracket notation",
     answerSchema: programBody(
       expressionStatement(
-        S.object()
-          .prop("type", S.const("MemberExpression"))
-          .prop("computed", S.const(true))
-          .required()
-          .prop(
-            "object",
-            object({
+        objectMemberExpression({
+          computed: true,
+          object: objectMemberExpression({
+            computed: true,
+            object: objectMemberExpression({
               computed: true,
-              object: object({
+              object: objectMemberExpression({
                 computed: true,
-                object: object({
-                  computed: true,
-                  object: identifier("animal"),
-                  property: literal("owners"),
-                }),
-                property: literal(0),
+                object: identifier("animal"),
+                property: literal("owners"),
               }),
-              property: literal("address"),
-            })
-          )
-          .required()
-          .prop("property", literal("postcode"))
-          .required()
+              property: literal(0),
+            }),
+            property: literal("address"),
+          }),
+          property: literal("postcode"),
+        })
       )
     ),
   },
@@ -430,11 +357,11 @@ let exercises: Question[] = [
     description: "get owners postcode with dot notation",
     answerSchema: programBody(
       expressionStatement(
-        object({
-          object: object({
-            object: object({
+        objectMemberExpression({
+          object: objectMemberExpression({
+            object: objectMemberExpression({
               computed: true,
-              object: object({
+              object: objectMemberExpression({
                 object: identifier("animal"),
                 property: identifier("owners"),
               }),
